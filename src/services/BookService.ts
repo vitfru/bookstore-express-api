@@ -6,8 +6,46 @@ export class BookService {
     constructor(private bookRepository: BookRepository) {
     }
 
-    async listBooks(): Promise<Book[]> {
-        return this.bookRepository.findAll();
+    async listBooks(query: {
+        page?: number;
+        limit?: number;
+        category?: string;
+        minPrice?: number;
+        maxPrice?: number;
+        search?: string;
+    }): Promise<any> {
+        let books = await this.bookRepository.findAll();
+
+        if (query.category) {
+            books = books.filter(book => book.category.toLowerCase() === query.category?.toLowerCase());
+        }
+
+        if (query.minPrice !== undefined) {
+            books = books.filter(book => book.price >= query.minPrice!);
+        }
+
+        if (query.maxPrice !== undefined) {
+            books = books.filter(book => book.price <= query.maxPrice!);
+        }
+
+        if (query.search) {
+            const search = query.search.toLowerCase();
+            books = books.filter(book => book.title.toLowerCase().includes(search) || book.author.toLowerCase().includes(search));
+        }
+
+        const page = query.page && query.page > 0 ? query.page : 1;
+        const limit = query.limit && query.limit > 0 ? query.limit : 3;
+        const start = (page - 1) * limit;
+        const end = start + limit;
+
+        const paginatedBooks = books.slice(start, end);
+
+        return {
+            total: books.length,
+            page,
+            limit,
+            data: paginatedBooks
+        };
     }
 
     async getBook(id: string): Promise<Book> {

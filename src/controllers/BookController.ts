@@ -7,8 +7,17 @@ export class BookController {
 
     getAll = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const books = await this.bookService.listBooks();
-            res.json(books);
+            const query = {
+                page: req.query.page ? parseInt(req.query.page as string, 10) : undefined,
+                limit: req.query.limit ? parseInt(req.query.limit as string, 10) : undefined,
+                category: req.query.category as string | undefined,
+                minPrice: req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined,
+                maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
+                search: req.query.search as string | undefined,
+            };
+
+            const result = await this.bookService.listBooks(query);
+            res.json(result);
         } catch (error) {
             next(error);
         }
