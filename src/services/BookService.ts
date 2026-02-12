@@ -1,18 +1,19 @@
 import {BookRepository} from "../repositories/interfaces/BookRepository";
 import {Book} from "../domain/Book";
+import {NotFoundError} from "../errors/NotFoundError";
 
 export class BookService {
     constructor(private bookRepository: BookRepository) {
     }
 
-    async listBooks() {
+    async listBooks(): Promise<Book[]> {
         return this.bookRepository.findAll();
     }
 
-    async getBook(id: string) {
+    async getBook(id: string): Promise<Book> {
         const book = await this.bookRepository.findById(id);
         if (!book) {
-            throw new Error("Book not found");
+            throw new NotFoundError(`Book with id ${id} not found`);
         }
 
         return book;
@@ -26,7 +27,7 @@ export class BookService {
         category: string;
         stock: number;
         updatedAt: Date;
-    }) {
+    }): Promise<Book> {
         return this.bookRepository.create(data);
     }
 }
