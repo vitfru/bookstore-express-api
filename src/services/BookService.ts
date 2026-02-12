@@ -30,4 +30,27 @@ export class BookService {
     }): Promise<Book> {
         return this.bookRepository.create(data);
     }
+
+    async updateBook(id: string, data: {
+        title?: string;
+        author?: string;
+        description?: string;
+        price?: number;
+        category?: string;
+        stock?: number;
+    }): Promise<Book> {
+        try {
+            return this.bookRepository.update(id, data);
+        } catch (error) {
+            throw new NotFoundError(`Book with id ${id} not found`);
+        }
+    }
+
+    async deleteBook(id: string): Promise<void> {
+        try {
+            await this.bookRepository.delete(id);
+        } catch (error) {
+            throw new NotFoundError(`Book with id ${id} not found`);
+        }
+    }
 }

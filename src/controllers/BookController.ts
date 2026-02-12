@@ -33,4 +33,25 @@ export class BookController {
             next(error);
         }
     };
+
+    update = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = (req.params.id) as string;
+            const book = await this.bookService.updateBook(id, req.body);
+
+            res.json(book);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    delete = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = (req.params.id) as string;
+            await this.bookService.deleteBook(id);
+            res.status(204).end();
+        } catch (error) {
+            next(error);
+        }
+    };
 }

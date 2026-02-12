@@ -12,3 +12,5 @@ export const bookRouter = Router();
 bookRouter.get("/", bookController.getAll);
 bookRouter.get("/:id", bookController.getOne);
 bookRouter.post("/", bookController.create);
+bookRouter.put("/:id", bookController.update);
+bookRouter.delete("/:id", bookController.delete);
