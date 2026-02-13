@@ -4,6 +4,7 @@ import {BookService} from "../services/BookService";
 import {BookController} from "../controllers/BookController";
 import {validateRequest} from "../middleware/validateRequest";
 import {createBookSchema, updateBookSchema} from '../validation/bookValidation';
+import {authMiddleware, adminOnly} from "../middleware/authMiddleware";
 
 const bookRepository = new MemoryBookRepository();
 const bookService = new BookService(bookRepository);
@@ -13,6 +14,6 @@ export const bookRouter = Router();
 
 bookRouter.get("/", bookController.getAll);
 bookRouter.get("/:id", bookController.getOne);
-bookRouter.post("/", validateRequest(createBookSchema), bookController.create);
+bookRouter.post("/", authMiddleware, validateRequest(createBookSchema), bookController.create);
 bookRouter.put("/:id", validateRequest(updateBookSchema), bookController.update);
 bookRouter.delete("/:id", bookController.delete);
